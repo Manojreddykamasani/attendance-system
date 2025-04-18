@@ -30,10 +30,7 @@ const HomePage = () => {
   }, [searchTerm]); 
 
   // Filter data based on the search term
-  const filteredData = data.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.rollNo.includes(searchTerm)
-  );
+  const filteredData = data
 
   return (
     <div className="bg-white min-h-screen flex flex-col justify-center items-center">

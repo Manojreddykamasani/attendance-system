@@ -18,18 +18,30 @@ const markattendance=async(req,res)=>{
     }
 }
 app.post('/markattendance',markattendance)
-const getattendance = async(req,res)=>{
-    const details=req.body;
-    const {data,error}=await supabase.from('attendance').select('date,status').eq("student_roll",details.roll)
-    if(error){
-        console.log(error)
-        res.status(500).json({error:'failed to get attendance'})
+const getattendance = async (req, res) => {
+    const details = req.body;
+    const { data, error } = await supabase
+      .from('attendance')
+      .select('date, status')
+      .eq('student_roll', details.roll);
+  
+    if (error) {
+      console.log(error);
+      res.status(500).json({ error: 'failed to get attendance' });
+    } else {
+      const attendanceCount = data.filter(item => item.status === 'present').length;
+      const attendancePercent = (attendanceCount / data.length) * 100;
+        const attendanceData = data.reduce((acc, item) => {
+        acc[item.date] = item.status;
+        return acc;
+      }, {});
+        res.status(200).json({
+        attendance: attendancePercent,
+        data: attendanceData
+      });
     }
-    else{
-    const attendancepercent = (data.filter(item => item.status === 'present').length / data.length) * 100;
-    res.status(200).json({"data":data,"attendance":attendancepercent})
-}
-}
+  };
+  
 
 app.post('/getattendance',getattendance)
 app.post('/getsinglestudent',async (req,res)=>{
